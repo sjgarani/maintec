@@ -5,9 +5,9 @@ LIC_FILES_CHKSUM = "file://${COMMON_LICENSE_DIR}/MIT;md5=0835ade698e0bcf8506ecda
 
 DEPENDS += "cacao curl openssl jansson libffi libxml2 zeromq czmq"
 
-SRCREV = "${AUTOREV}"
+# SRCREV = "${AUTOREV}"
 
-SRC_URI = "git://github.com/apache/celix.git;branch=master;protocol=https"
+SRC_URI = "git://github.com/apache/celix.git;protocol=https;tag=rel/celix-${PV}"
 
 S = "${WORKDIR}/git"
 
