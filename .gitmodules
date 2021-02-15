@@ -7,3 +7,6 @@
 [submodule "metas/meta-openembedded"]
 	path = metas/meta-openembedded
 	url = git://git.openembedded.org/meta-openembedded
+[submodule "metas/meta-iot-cloud"]
+	path = metas/meta-iot-cloud
+	url = https://github.com/intel-iot-devkit/meta-iot-cloud.git

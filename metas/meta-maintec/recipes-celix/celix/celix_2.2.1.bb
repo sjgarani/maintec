@@ -5,12 +5,14 @@ LIC_FILES_CHKSUM = "file://${COMMON_LICENSE_DIR}/MIT;md5=0835ade698e0bcf8506ecda
 
 DEPENDS += "cacao curl openssl jansson libffi libxml2 zeromq czmq"
 
-# SRCREV = "${AUTOREV}"
-
-SRC_URI = "git://github.com/apache/celix.git;protocol=https;tag=rel/celix-${PV}"
+SRC_URI = "git://github.com/apache/celix.git;protocol=https;tag=rel/celix-${PV} \
+           file://0001-Update-to-Cross-Compile-in-Yocto.patch"
 
 S = "${WORKDIR}/git"
 
-inherit pkgconfig cmake
+inherit cmake
 
 EXTRA_OECMAKE = ""
+
+INSANE_SKIP_${PN} += "useless-rpaths"
+INSANE_SKIP_${PN}-dev += "dev-elf"
