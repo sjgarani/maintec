@@ -1,14 +1,14 @@
-From 0754e3a060364ff2d457d0a3b7b3ae2d8d3112d6 Mon Sep 17 00:00:00 2001
+From 0d5db604e8a4f13235a6cf425fb52e473bdbdd91 Mon Sep 17 00:00:00 2001
 From: Sandro Garani <sandro.garani@outlook.com>
 Date: Mon, 15 Feb 2021 11:58:12 -0300
 Subject: [PATCH] Update to Cross Compile in Yocto
 
 ---
- CMakeLists.txt | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ CMakeLists.txt | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index e008432..ef4f9c7 100644
+index e008432..88b76ca 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
 @@ -40,7 +40,7 @@ IF (ANDROID)
@@ -29,17 +29,6 @@ index e008432..ef4f9c7 100644
  endif()
  
  if(ENABLE_W_ERROR)
-@@ -85,6 +85,10 @@ if(ENABLE_W_ERROR)
-     set(CMAKE_CXX_FLAGS_DEBUG "-Werror ${CMAKE_CXX_FLAGS_DEBUG}")
- endif()
- 
-+set(CMAKE_SKIP_BUILD_RPATH  TRUE)
-+set(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
-+set(CMAKE_INSTALL_RPATH_USE_LINK_PATH FALSE)
-+
- # Set version for the framework package/release
- set(CELIX_MAJOR "2")
- set(CELIX_MINOR "2")
 -- 
 2.7.4
 
