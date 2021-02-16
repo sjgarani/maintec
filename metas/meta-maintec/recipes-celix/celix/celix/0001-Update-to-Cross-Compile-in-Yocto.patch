@@ -1,7 +1,7 @@
-From 0d5db604e8a4f13235a6cf425fb52e473bdbdd91 Mon Sep 17 00:00:00 2001
+From 6d81bfa91bd9e2e9ff5cd4df3e4c4d4332242b07 Mon Sep 17 00:00:00 2001
 From: Sandro Garani <sandro.garani@outlook.com>
 Date: Mon, 15 Feb 2021 11:58:12 -0300
-Subject: [PATCH] Update to Cross Compile in Yocto
+Subject: [PATCH 1/2] Update to Cross Compile in Yocto
 
 ---
  CMakeLists.txt | 4 ++--

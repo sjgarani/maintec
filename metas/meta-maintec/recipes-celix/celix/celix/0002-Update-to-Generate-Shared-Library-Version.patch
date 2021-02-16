@@ -1,0 +1,39 @@
+From eb1f95a8d0e2e55c485c5c3875a1773ee6bfedd9 Mon Sep 17 00:00:00 2001
+From: Sandro Garani <sandro.garani@outlook.com>
+Date: Tue, 16 Feb 2021 11:31:50 -0300
+Subject: [PATCH 2/2] Update to Generate Shared Library Version
+
+---
+ bundles/http_admin/civetweb/CMakeLists.txt | 2 ++
+ libs/dependency_manager/CMakeLists.txt     | 2 ++
+ 2 files changed, 4 insertions(+)
+
+diff --git a/bundles/http_admin/civetweb/CMakeLists.txt b/bundles/http_admin/civetweb/CMakeLists.txt
+index 687a397..fd14ea0 100644
+--- a/bundles/http_admin/civetweb/CMakeLists.txt
++++ b/bundles/http_admin/civetweb/CMakeLists.txt
+@@ -39,6 +39,8 @@ target_include_directories(civetweb_static PUBLIC
+ target_compile_options(civetweb_shared PRIVATE -w -DUSE_WEBSOCKET)
+ target_compile_options(civetweb_static PRIVATE -w -DUSE_WEBSOCKET)
+ 
++set_target_properties(civetweb_shared PROPERTIES "SOVERSION" 1)
++
+ install(TARGETS civetweb_shared EXPORT celix DESTINATION ${CMAKE_INSTALL_LIBDIR} COMPONENT http_admin)
+ install(DIRECTORY include/ DESTINATION include/celix/http_admin)
+ 
+diff --git a/libs/dependency_manager/CMakeLists.txt b/libs/dependency_manager/CMakeLists.txt
+index 758cc49..25a4a37 100644
+--- a/libs/dependency_manager/CMakeLists.txt
++++ b/libs/dependency_manager/CMakeLists.txt
+@@ -46,6 +46,8 @@ add_library(Celix::dm_shell ALIAS dm_shell)
+ add_library(Celix::dependency_manager_static ALIAS dependency_manager_static)
+ add_library(Celix::dependency_manager_so ALIAS dependency_manager_so)
+ 
++set_target_properties(dependency_manager_so PROPERTIES "SOVERSION" 1)
++
+ #install dummy libs
+ install(TARGETS dependency_manager_static dependency_manager_so dm_shell EXPORT celix DESTINATION ${CMAKE_INSTALL_LIBDIR} COMPONENT framework)
+ 
+-- 
+2.7.4
+
