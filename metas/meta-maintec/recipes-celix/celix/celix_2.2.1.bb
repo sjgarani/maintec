@@ -11,7 +11,7 @@ SRC_URI = "git://github.com/apache/celix.git;protocol=https;tag=rel/celix-${PV} 
 
 S = "${WORKDIR}/git"
 
-inherit cmake
+inherit pkgconfig cmake
 
 EXTRA_OECMAKE = ""
 
