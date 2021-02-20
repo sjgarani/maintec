@@ -16,6 +16,6 @@ inherit pkgconfig cmake
 EXTRA_OECMAKE = ""
 
 do_install() {
-    install -d ${D}${libexecdir}
-    install -m 0755 maintec ${D}${libexecdir}
+    install -d ${D}${bindir}
+    install -m 0755 deploy/maintec/maintec ${D}${bindir}
 }
