@@ -18,4 +18,8 @@ EXTRA_OECMAKE = ""
 do_install() {
     install -d ${D}${bindir}
     install -m 0755 deploy/maintec/maintec ${D}${bindir}
+    install -d ${D}/usr/share/celix/bundles
+    install -m 0755 deploy/maintec/bundles/maintec_main.zip ${D}/usr/share/celix/bundles
 }
+
+FILES_${PN} += "/usr/share/celix/bundles/maintec_main.zip"
