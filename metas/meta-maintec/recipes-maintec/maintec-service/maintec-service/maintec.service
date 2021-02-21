@@ -1,0 +1,11 @@
+[Unit]
+Description=Maintec systemd service.
+
+[Service]
+Type=forking
+PIDFile=/var/run/maintec.pid
+ExecStart=/bin/sh /usr/bin/maintec.sh
+ExecReload=/bin/kill -HUP $MAINPID
+
+[Install]
+WantedBy=multi-user.target
