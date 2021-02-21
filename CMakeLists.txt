@@ -15,6 +15,6 @@ add_celix_container(maintec
     CXX
     BUNDLES
         Celix::shell
-        Celix::shell_tui
+        Celix::remote_shell
         maintec_main
 )

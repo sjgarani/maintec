@@ -3,7 +3,7 @@ SECTION = "maintec"
 LICENSE = "MIT"
 LIC_FILES_CHKSUM = "file://${COMMON_LICENSE_DIR}/MIT;md5=0835ade698e0bcf8506ecda2f7b4f302"
 
-DEPENDS += "celix"
+DEPENDS += "celix telnet"
 
 SRCREV = "${AUTOREV}"
 
@@ -18,8 +18,6 @@ EXTRA_OECMAKE = ""
 do_install() {
     install -d ${D}${bindir}
     install -m 0755 deploy/maintec/maintec ${D}${bindir}
-    install -d ${D}/usr/share/celix/bundles
-    install -m 0755 deploy/maintec/bundles/maintec_main.zip ${D}/usr/share/celix/bundles
+    install -d ${D}${bindir}${CELIX_BUNDLES_PATH}
+    install -m 0755 deploy/maintec/bundles/* ${D}${bindir}${CELIX_BUNDLES_PATH}
 }
-
-FILES_${PN} += "/usr/share/celix/bundles/maintec_main.zip"
