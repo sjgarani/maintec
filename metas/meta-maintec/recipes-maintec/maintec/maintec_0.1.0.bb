@@ -7,7 +7,7 @@ DEPENDS += "celix"
 
 SRCREV = "${AUTOREV}"
 
-SRC_URI = "git://github.com/sjgarani/maintec.git;branch=main;protocol=git"
+SRC_URI = "git://github.com/sjgarani/maintec.git;branch=app;protocol=git"
 
 S = "${WORKDIR}/git"
 

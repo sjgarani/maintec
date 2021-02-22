@@ -1,0 +1,4 @@
+SANITY_VERSION 1
+TMPDIR /home/sandro/Workspace/maintec/poky/build/tmp
+SSTATE_DIR /home/sandro/Workspace/maintec/poky/build/sstate-cache
+NATIVELSBSTRING ubuntu-16.04
