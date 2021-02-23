@@ -11,10 +11,15 @@ find_package(Celix REQUIRED)
 add_subdirectory(bundles/maintec_main)
 
 add_celix_container(maintec
+    COPY
     USE_CONFIG
     CXX
     BUNDLES
         Celix::shell
         Celix::remote_shell
         maintec_main
+)
+
+celix_container_runtime_properties(maintec
+    "CELIX_BUNDLES_PATH=/usr/share/celix/bundles"
 )
