@@ -12,7 +12,6 @@ add_subdirectory(bundles/maintec_main)
 
 add_celix_container(maintec
     COPY
-    USE_CONFIG
     CXX
     BUNDLES
         Celix::shell

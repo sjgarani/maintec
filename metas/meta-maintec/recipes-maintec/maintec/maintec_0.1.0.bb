@@ -18,10 +18,8 @@ EXTRA_OECMAKE = ""
 export CELIX_BUNDLES_PATH="/usr/share/celix/bundles"
 
 do_install() {
-    install -d ${D}${bindir}
-    install -m 0755 deploy/maintec/maintec ${D}${bindir}
-    install -d ${D}$CELIX_BUNDLES_PATH
-    install -m 0755 deploy/maintec/bundles/maintec_main.zip ${D}$CELIX_BUNDLES_PATH
+    install -d ${D}${libexecdir}
+    install -m 0755 deploy/maintec/maintec ${D}${libexecdir}
+    install -d ${D}${libexecdir}/bundles
+    install -m 0755 deploy/maintec/bundles/* ${D}${libexecdir}/bundles
 }
-
-FILES_${PN} += "/usr/share/celix/bundles/maintec_main.zip"
