@@ -1,3 +1,5 @@
 #!/bin/sh
 
-/usr/libexec/maintec
+cd /usr/libexec/
+
+./maintec
