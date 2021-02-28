@@ -1,5 +1,3 @@
 #!/bin/sh
 
-cd /usr/libexec/
-
-./maintec
+ CELIX_BUNDLES_PATH=/usr/libexec/bundles /usr/libexec/maintec

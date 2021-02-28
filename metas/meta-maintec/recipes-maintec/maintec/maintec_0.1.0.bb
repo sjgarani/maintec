@@ -15,8 +15,6 @@ inherit pkgconfig cmake
 
 EXTRA_OECMAKE = ""
 
-export CELIX_BUNDLES_PATH="/usr/share/celix/bundles"
-
 do_install() {
     install -d ${D}${libexecdir}
     install -m 0755 deploy/maintec/maintec ${D}${libexecdir}

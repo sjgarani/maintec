@@ -18,7 +18,3 @@ add_celix_container(maintec
         Celix::remote_shell
         maintec_main
 )
-
-celix_container_runtime_properties(maintec
-    "CELIX_BUNDLES_PATH=/usr/share/celix/bundles"
-)
