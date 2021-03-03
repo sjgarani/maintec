@@ -15,7 +15,7 @@ public:
 class BringUpActivator {
 public:
     explicit BringUpActivator(const std::shared_ptr<celix::BundleContext>& ctx) {
-        std::cout << "Hello world from bundle with id " << ctx->getBundleId() << std::endl;
+        std::cout << "Started Bring Up from bundle with id " << ctx->getBundleId() << std::endl;
         auto reg = ctx->registerService<celix::IShellCommand>(std::make_shared<BringUpShellCommand>())
                 .addProperty(celix::IShellCommand::COMMAND_NAME, "bringup")
                 .build();
@@ -23,7 +23,7 @@ public:
     }
 
     ~BringUpActivator() noexcept {
-        std::cout << "Goodbye world" << std::endl;
+        std::cout << "Finished Bring Up" << std::endl;
     }
 private:
     std::vector<std::shared_ptr<celix::ServiceRegistration>> regs{};
