@@ -13,14 +13,14 @@ public:
         return instance;
     }
 
-    void addProcessor(std::shared_ptr<processor::IProcessor> _processor) {
+    void addProcessor(std::string name, std::shared_ptr<processor::IProcessor> _processor) {
         std::lock_guard<std::mutex> lck{mutex};
-        processors[_processor->getName()] = std::move(_processor);
+        processors[name] = std::move(_processor);
     }
 
-    void removeProcessor(std::shared_ptr<processor::IProcessor> _processor) {
+    void removeProcessor(std::string name, std::shared_ptr<processor::IProcessor> _processor) {
         std::lock_guard<std::mutex> lck{mutex};
-        processors.erase(_processor->getName());
+        processors.erase(name);
     }
 
     void executeCommand(const std::string&, const std::vector<std::string>& commandArgs, FILE* outStream, FILE* /*errorStream*/) {
@@ -70,8 +70,18 @@ private:
     std::vector<std::shared_ptr<celix::ServiceRegistration>> regs{};
     std::shared_ptr<celix::GenericServiceTracker> createTracker(const std::shared_ptr<celix::BundleContext>& ctx) {
         return ctx->trackServices<processor::IProcessor>()
-                .addAddCallback(std::bind(&ProcessorConsumer::addProcessor, processorConsumer, std::placeholders::_1))
-                .addRemCallback(std::bind(&ProcessorConsumer::removeProcessor, processorConsumer, std::placeholders::_1))
+                .addAddWithPropertiesCallback([this](std::shared_ptr<processor::IProcessor> processor, std::shared_ptr<const celix::Properties> properties) {
+                            std::string name = properties->get(processor::IProcessor::PROCESSOR_NAME);
+                            if (not name.empty()) {
+                                this->processorConsumer->addProcessor(name, processor);
+                            }
+                        })
+                .addRemWithPropertiesCallback([this](std::shared_ptr<processor::IProcessor> processor, std::shared_ptr<const celix::Properties> properties) {
+                            std::string name = properties->get(processor::IProcessor::PROCESSOR_NAME);
+                            if (not name.empty()) {
+                                this->processorConsumer->removeProcessor(name, processor);
+                            }
+                        })
                 .build();
     }
 

@@ -8,7 +8,7 @@ public:
         std::cout << "Started Processor from bundle with id " << ctx->getBundleId() << std::endl;
         auto echo = std::make_shared<EchoProcessor>();
         auto reg = ctx->registerService<processor::IProcessor>(echo)
-                .addProperty(processor::IProcessor::PROCESSOR_NAME, echo->getName())
+                .addProperty(processor::IProcessor::PROCESSOR_NAME, "echo")
                 .build();
         regs.push_back(reg);
     }
@@ -21,10 +21,6 @@ private:
 
     class EchoProcessor : public processor::IProcessor {
     public:
-
-        std::string getName() {
-            return "echo";
-        }
 
         std::vector<char> process(std::vector<char> input) {
             return input;
