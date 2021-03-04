@@ -6,8 +6,9 @@ class ProcessorActivator {
 public:
     explicit ProcessorActivator(const std::shared_ptr<celix::BundleContext>& ctx) {
         std::cout << "Started Processor from bundle with id " << ctx->getBundleId() << std::endl;
-        auto reg = ctx->registerService<processor::IProcessor>(std::make_shared<EchoProcessor>())
-                .addProperty(processor::IProcessor::PROCESSOR_NAME, "echo")
+        auto echo = std::make_shared<EchoProcessor>();
+        auto reg = ctx->registerService<processor::IProcessor>(echo)
+                .addProperty(processor::IProcessor::PROCESSOR_NAME, echo->getName())
                 .build();
         regs.push_back(reg);
     }
@@ -20,7 +21,12 @@ private:
 
     class EchoProcessor : public processor::IProcessor {
     public:
-        std::vector<unsigned char> processor(std::vector<unsigned char> input) {
+
+        std::string getName() {
+            return "echo";
+        }
+
+        std::vector<char> process(std::vector<char> input) {
             return input;
         }
     };

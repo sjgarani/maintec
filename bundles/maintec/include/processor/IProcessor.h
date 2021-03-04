@@ -5,6 +5,8 @@ namespace processor {
     public:
         static constexpr const char * const PROCESSOR_NAME = "name";
         virtual ~IProcessor() = default;
-        virtual std::vector<unsigned char> processor(std::vector<unsigned char> input) = 0;
+
+        virtual std::string getName() = 0;
+        virtual std::vector<char> process(std::vector<char> input) = 0;
     };
 }

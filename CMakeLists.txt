@@ -19,3 +19,5 @@ add_celix_container(maintec
         ProcessorBundle
         BringUpBundle
 )
+
+# Celix::shell_tui <- Celix::remote_shell
