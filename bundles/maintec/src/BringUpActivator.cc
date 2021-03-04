@@ -18,19 +18,31 @@ public:
         processors[_processor->getName()] = std::move(_processor);
     }
 
+    void removeProcessor(std::shared_ptr<processor::IProcessor> _processor) {
+        std::lock_guard<std::mutex> lck{mutex};
+        processors.erase(_processor->getName());
+    }
+
     void executeCommand(const std::string&, const std::vector<std::string>& commandArgs, FILE* outStream, FILE* /*errorStream*/) {
         auto it = commandArgs.begin();
-        auto processor = processors.find(*it);
-        if (processor != processors.end()) {
+
+        std::unique_lock<std::mutex> lck{mutex,  std::defer_lock};
+        lck.lock();
+        auto localProcessor = processors.find(*it);
+        lck.unlock();
+
+        if (localProcessor != processors.end()) {
             std::ostringstream textStream;
             while (++it != commandArgs.end()) {
                 textStream << *it << " ";
             }
             std::string text = textStream.str();
             auto input = std::vector<char>(text.begin(), text.end());
-            auto output = processor->second->process(input);
+            auto output = localProcessor->second->process(input);
             std::string s(output.begin(), output.end());
             fprintf(outStream, "%s\n", s.c_str());
+        } else {
+            fprintf(outStream, "Bring Up not available.\n");
         }
     }
 private:
@@ -58,7 +70,8 @@ private:
     std::vector<std::shared_ptr<celix::ServiceRegistration>> regs{};
     std::shared_ptr<celix::GenericServiceTracker> createTracker(const std::shared_ptr<celix::BundleContext>& ctx) {
         return ctx->trackServices<processor::IProcessor>()
-                .addSetCallback(std::bind(&ProcessorConsumer::addProcessor, processorConsumer, std::placeholders::_1))
+                .addAddCallback(std::bind(&ProcessorConsumer::addProcessor, processorConsumer, std::placeholders::_1))
+                .addRemCallback(std::bind(&ProcessorConsumer::removeProcessor, processorConsumer, std::placeholders::_1))
                 .build();
     }
 
