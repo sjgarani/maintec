@@ -1,6 +1,14 @@
 #include <iostream>
+#include <vector>
 #include "celix/BundleActivator.h"
 #include "processor/IProcessor.h"
+
+class EchoProcessor : public processor::IProcessor {
+public:
+    std::vector<char> process(std::vector<char> input) {
+        return input;
+    }
+};
 
 class ProcessorActivator {
 public:
@@ -18,14 +26,6 @@ public:
     }
 private:
     std::vector<std::shared_ptr<celix::ServiceRegistration>> regs{};
-
-    class EchoProcessor : public processor::IProcessor {
-    public:
-
-        std::vector<char> process(std::vector<char> input) {
-            return input;
-        }
-    };
 };
 
 CELIX_GEN_CXX_BUNDLE_ACTIVATOR(ProcessorActivator)

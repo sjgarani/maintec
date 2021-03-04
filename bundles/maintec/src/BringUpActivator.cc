@@ -1,5 +1,6 @@
 #include <iostream>
 #include <sstream>
+#include <vector>
 #include "celix/BundleActivator.h"
 #include "celix/IShellCommand.h"
 #include "processor/IProcessor.h"

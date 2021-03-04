@@ -17,6 +17,7 @@ add_celix_container(maintec
         Celix::ShellCxx
         Celix::shell_tui
         ProcessorBundle
+        HttpProcessorBundle
         BringUpBundle
 )
 
