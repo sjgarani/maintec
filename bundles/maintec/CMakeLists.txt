@@ -3,23 +3,24 @@
 add_library(ProcessorApi INTERFACE)
 target_include_directories(ProcessorApi INTERFACE include)
 
-add_celix_bundle(ProcessorBundle
+add_celix_bundle(MaintecBundle
     VERSION 1.0.0
 	SOURCES
-        src/ProcessorActivator.cc
+        src/MaintecActivator.cc
 )
 
-target_link_libraries(ProcessorBundle PRIVATE ProcessorApi)
+target_link_libraries(MaintecBundle PRIVATE ProcessorApi)
+target_link_libraries(MaintecBundle PRIVATE nlohmann_json::nlohmann_json)
 
 add_celix_bundle(HttpProcessorBundle
     VERSION 1.0.0
 	SOURCES
         src/HttpProcessorActivator.cc
-        src/processor/ChainProcessor.h
         src/processor/HttpMethodProcessor.cc
 )
 
 target_link_libraries(HttpProcessorBundle PRIVATE ProcessorApi)
+target_link_libraries(HttpProcessorBundle PRIVATE nlohmann_json::nlohmann_json)
 
 add_celix_bundle(BringUpBundle
     VERSION 1.0.0

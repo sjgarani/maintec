@@ -15,7 +15,7 @@ namespace processor {
             if (mNextProcessor != 0) {
                 processed = mNextProcessor->process(processed);
             }
-            processed = posProcessImplementation(input);
+            processed = posProcessImplementation(processed);
             return processed;
         }
     protected:

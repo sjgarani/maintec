@@ -8,6 +8,8 @@ SET(CMAKE_CXX_FLAGS_DEBUG "-g -DDEBUG")
 
 find_package(Celix REQUIRED)
 
+add_subdirectory(libs/nlohmann_json)
+
 add_subdirectory(bundles/maintec)
 
 add_celix_container(maintec
@@ -16,7 +18,7 @@ add_celix_container(maintec
     BUNDLES
         Celix::ShellCxx
         Celix::shell_tui
-        ProcessorBundle
+        MaintecBundle
         HttpProcessorBundle
         BringUpBundle
 )

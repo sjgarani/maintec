@@ -13,6 +13,11 @@ public:
                 .addProperty(processor::IProcessor::PROCESSOR_NAME, "put")
                 .build();
         regs.push_back(reg);
+        auto get = std::make_shared<processor::HttpGetProcessor>();
+        reg = ctx->registerService<processor::IProcessor>(get)
+                .addProperty(processor::IProcessor::PROCESSOR_NAME, "get")
+                .build();
+        regs.push_back(reg);
     }
 
     ~HttpProcessorActivator() noexcept {
