@@ -35,7 +35,7 @@ public:
         if (localProcessor != processors.end()) {
             std::ostringstream textStream;
             while (++it != commandArgs.end()) {
-                textStream << *it;
+                textStream << *it << " ";
             }
             std::string text = textStream.str();
             auto input = std::vector<char>(text.begin(), text.end());
