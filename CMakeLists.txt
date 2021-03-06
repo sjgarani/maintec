@@ -12,7 +12,7 @@ add_subdirectory(libs/nlohmann_json)
 
 add_subdirectory(bundles/maintec)
 
-add_celix_container(maintec
+add_celix_container(maintec_node
     COPY
     CXX
     BUNDLES
@@ -20,9 +20,18 @@ add_celix_container(maintec
         Celix::shell_tui
         MaintecBundle
         HttpProcessorBundle
+)
+# BringUpBundle
+# Celix::shell_tui <- Celix::remote_shell
+
+add_celix_container(maintec_endpoint
+    COPY
+    CXX
+    BUNDLES
+        Celix::ShellCxx
+        Celix::shell_tui
         BringUpBundle
 )
-
 # Celix::shell_tui <- Celix::remote_shell
 
 # <------------ add hiredis dependency --------------->
