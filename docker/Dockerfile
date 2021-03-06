@@ -52,3 +52,11 @@ RUN mkdir build && \
     cmake -DCMAKE_BUILD_TYPE=Release .. && \
     make && \
     make install
+
+WORKDIR /opt/maintec
+RUN git submodule update --init libs/nlohmann_json && \
+    mkdir build && \
+    cd build && \
+    cmake .. && \
+    make && \
+    make install
