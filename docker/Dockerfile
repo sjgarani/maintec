@@ -1,7 +1,7 @@
 FROM ubuntu:18.04
 
 RUN apt-get update && \
-    apt-get install -y redis wget libssl-dev && \
+    apt-get install -y redis wget libssl-dev vim && \
     apt-get clean
 
 RUN apt-get install -yq --no-install-recommends \
@@ -24,6 +24,7 @@ WORKDIR /opt
 
 RUN wget https://github.com/Kitware/CMake/releases/download/v3.18.6/cmake-3.18.6.tar.gz && \
     tar -zxvf cmake-3.18.6.tar.gz && \
+    rm cmake-3.18.6.tar.gz && \
     cd cmake-3.18.6 && \
     ./bootstrap && \
     make && \
@@ -58,5 +59,4 @@ RUN git submodule update --init libs/nlohmann_json && \
     mkdir build && \
     cd build && \
     cmake .. && \
-    make && \
-    make install
+    make
