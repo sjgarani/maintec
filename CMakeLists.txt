@@ -20,6 +20,7 @@ add_celix_container(maintec
         Celix::remote_shell
         MaintecBundle
         HttpProcessorBundle
+        BringUpBundle
 )
 
 add_celix_container(endpoint
@@ -28,7 +29,7 @@ add_celix_container(endpoint
     BUNDLES
         Celix::ShellCxx
         Celix::remote_shell
-        BringUpBundle
+        EndpointTestBundle
 )
 
 # <------------ add hiredis dependency --------------->

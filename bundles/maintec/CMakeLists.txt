@@ -30,3 +30,12 @@ add_celix_bundle(BringUpBundle
 
 target_link_libraries(BringUpBundle PRIVATE ProcessorApi)
 target_link_libraries(BringUpBundle PRIVATE Celix::shell_api)
+
+add_celix_bundle(EndpointTestBundle
+    VERSION 1.0.0
+	SOURCES
+        src/EndpointTestActivator.cc
+)
+
+target_link_libraries(EndpointTestBundle PRIVATE ProcessorApi)
+target_link_libraries(EndpointTestBundle PRIVATE Celix::shell_api)
