@@ -17,22 +17,19 @@ add_celix_container(maintec
     CXX
     BUNDLES
         Celix::ShellCxx
-        Celix::shell_tui
+        Celix::remote_shell
         MaintecBundle
         HttpProcessorBundle
 )
-# BringUpBundle
-# Celix::shell_tui <- Celix::remote_shell
 
 add_celix_container(endpoint
     COPY
     CXX
     BUNDLES
         Celix::ShellCxx
-        Celix::shell_tui
+        Celix::remote_shell
         BringUpBundle
 )
-# Celix::shell_tui <- Celix::remote_shell
 
 # <------------ add hiredis dependency --------------->
 find_path(HIREDIS_HEADER hiredis)
