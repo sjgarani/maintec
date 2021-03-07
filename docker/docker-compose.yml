@@ -8,10 +8,5 @@ services:
   node_1:
     build: .
     ports:
-      - "6666:6667"
-    command: bash -c "/opt/start_maintec.sh"
-  node_2:
-    build: .
-    ports:
-      - "6666:6668"
+      - "6667:6666"
     command: bash -c "/opt/start_maintec.sh"
