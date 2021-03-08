@@ -1,68 +1,103 @@
 #include <vector>
 #include <iostream>
-#include <string>
 #include <nlohmann/json.hpp>
 #include <sw/redis++/redis++.h>
+#include <nlohmann/json-schema.hpp>
 #include "processor/IProcessor.h"
-#include "processor/ChainProcessor.h"
+#include "JsonHelperProcessor.h"
 
 using json = nlohmann::json;
+using json_validator = nlohmann::json_schema::json_validator;
 using namespace sw::redis;
 
 namespace processor {
 
-    class GetProcessor : public processor::ChainProcessor {
+    // Chain Processor
+    class GetDataProcessor : public processor::ChainProcessor {
     protected:
-        std::vector<char> processImplementation(std::vector<char> input) {
+        json processImplementation(json input) {
             auto redis = Redis("tcp://127.0.0.1:6379");
 
             std::string value = redis.get("maintec").value();
-            json result = R"([])"_json;
-            json data = json::parse(value);
-
-            std::string text(input.begin(), input.end());
-            text = text.erase(text.find_last_not_of("\t\n\v\f\r ") + 1);
-            json::json_pointer pointer;
-            if (text.size() > 0 && text.at(0) == '/') {
-                pointer = json::json_pointer(text);
-                if (data.contains(pointer)) {
-                    result = data.at(pointer);
-                }
-            } else if (text.empty()) {
-                result = data;
-            }
-            std::string resultText = result.dump();
-            return std::vector<char>(resultText.begin(), resultText.end());
-        }
-        std::vector<char> posProcessImplementation(std::vector<char> input) {
+            input["data"] = json::parse(value);
             return input;
         }
     };
+
+    static json maintec_schema = R"(
+    {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "Maintec",
+        "definitions": {
+            "uri_pointer": {
+                "type": "string"
+            },
+            "database": {
+                "type": "object"
+            }
+        },
+        "properties": {
+            "uri": { "$ref": "#/definitions/uri_pointer" },
+            "data": { "$ref": "#/definitions/database" }
+        },
+        "required": ["uri", "data"]
+    }
+    )"_json;
 
     class ValidatorProcessor : public processor::ChainProcessor {
-        std::vector<char> processImplementation(std::vector<char> input) {
-            return input;
-        }
-        std::vector<char> posProcessImplementation(std::vector<char> input) {
+        json processImplementation(json input) {
+            json_validator validator;
+            try {
+                validator.set_root_schema(maintec_schema);
+            } catch (const std::exception &e) {
+                std::cerr << "Validation of schema failed, here is why: " << e.what() << "\n";
+                return json();
+            }
+            try {
+                validator.validate(input);
+            } catch (const std::exception &e) {
+                std::cerr << "Validation failed, here is why: " << e.what() << "\n";
+                return json();
+            }
             return input;
         }
     };
 
+    class UriProcessor : public processor::ChainProcessor {
+    protected:
+        json processImplementation(json input) {
+            json result = R"([])"_json;
+            json data = input["data"];
+            json::json_pointer uri = json::json_pointer(input["uri"]);
+            if (data.contains(uri)) {
+                result = data.at(uri);
+            }
+            return result;
+        }
+    };
+
+    // Http Processor
     class HttpGetProcessor : public processor::StartProcessor {
     public:
         HttpGetProcessor() {
-            setNextProcessor(&get);
+            setNextProcessor(&getData);
+            getData.setNextProcessor(&validator);
+            getData.setNextProcessor(&uriProcessor);
         }
     private:
-        processor::GetProcessor get;
+        processor::GetDataProcessor getData;
+        processor::ValidatorProcessor validator;
+        processor::UriProcessor uriProcessor;
     };
 
     class HttpPutProcessor : public processor::StartProcessor {
     public:
         HttpPutProcessor() {
-            setNextProcessor(&validator);
+            setNextProcessor(&getData);
+            getData.setNextProcessor(&validator);
         }
     private:
+        processor::GetDataProcessor getData;
         processor::ValidatorProcessor validator;
     };
 }

@@ -7,8 +7,8 @@ SET(CMAKE_CXX_FLAGS "-std=c++11 -fno-rtti ${CMAKE_CXX_FLAGS}")
 SET(CMAKE_CXX_FLAGS_DEBUG "-g -DDEBUG")
 
 find_package(Celix REQUIRED)
-
-add_subdirectory(libs/nlohmann_json)
+find_package(nlohmann_json REQUIRED)
+find_package(nlohmann_json_schema_validator REQUIRED)
 
 add_subdirectory(bundles/maintec)
 
@@ -39,3 +39,5 @@ target_include_directories(maintec PUBLIC ${REDIS_PLUS_PLUS_HEADER})
 
 find_library(REDIS_PLUS_PLUS_LIB redis++)
 target_link_libraries(maintec PUBLIC ${REDIS_PLUS_PLUS_LIB})
+
+target_link_libraries(maintec PRIVATE nlohmann_json_schema_validator)

@@ -10,6 +10,3 @@
 [submodule "metas/meta-iot-cloud"]
 	path = metas/meta-iot-cloud
 	url = https://github.com/intel-iot-devkit/meta-iot-cloud.git
-[submodule "libs/nlohmann_json"]
-	path = libs/nlohmann_json
-	url = https://github.com/nlohmann/json.git
