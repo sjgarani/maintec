@@ -18,7 +18,6 @@ add_celix_container(maintec
     BUNDLES
         Celix::ShellCxx
         Celix::shell_tui
-        MaintecBundle
         HttpProcessorBundle
         BringUpBundle
 )
@@ -40,4 +39,5 @@ target_include_directories(maintec PUBLIC ${REDIS_PLUS_PLUS_HEADER})
 find_library(REDIS_PLUS_PLUS_LIB redis++)
 target_link_libraries(maintec PUBLIC ${REDIS_PLUS_PLUS_LIB})
 
+# <------------ add JSON Schema Validator -------------->
 target_link_libraries(maintec PRIVATE nlohmann_json_schema_validator)
