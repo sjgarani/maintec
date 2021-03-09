@@ -53,6 +53,15 @@ namespace processor {
                     "payload": { "$ref": "#/definitions/database" }
                 },
                 "required": ["uri", "method", "data", "payload"]
+            },
+            {
+                "properties": {
+                    "uri": { "$ref": "#/definitions/uri_pointer" },
+                    "method": { "const": "patch" },
+                    "data": { "$ref": "#/definitions/database" },
+                    "payload": { "$ref": "#/definitions/database" }
+                },
+                "required": ["uri", "method", "data", "payload"]
             }
         ]
     }
@@ -90,6 +99,38 @@ namespace processor {
         }
     };
 
+    class PutProcessor : public processor::ChainProcessor {
+    protected:
+        json processImplementation(json input) {
+            json::json_pointer uri = json::json_pointer(input["uri"]);
+            if (input["data"].contains(uri)) {
+                input["data"].at(uri) = input["payload"];
+            }
+            return input["data"];
+        }
+    };
+
+    class PatchProcessor : public processor::ChainProcessor {
+    protected:
+        json processImplementation(json input) {
+            json::json_pointer uri = json::json_pointer(input["uri"]);
+            if (input["data"].contains(uri)) {
+                input["data"].at(uri).update(input["payload"]);
+            }
+            return input["data"];
+        }
+    };
+
+    class SetDataProcessor : public processor::ChainProcessor {
+    protected:
+        json processImplementation(json input) {
+            auto redis = Redis("tcp://127.0.0.1:6379");
+
+            redis.set("maintec", input.dump());
+            return input;
+        }
+    };
+
     // Http Processor
     class HttpGetProcessor : public processor::ChainProcessor {
     public:
@@ -114,6 +155,8 @@ namespace processor {
         HttpPutProcessor() {
             setNextProcessor(&getData);
             getData.setNextProcessor(&validator);
+            validator.setNextProcessor(&putProcessor);
+            putProcessor.setNextProcessor(&setData);
         }
     protected:
         json processImplementation(json input) {
@@ -123,5 +166,27 @@ namespace processor {
     private:
         processor::GetDataProcessor getData;
         processor::ValidatorProcessor validator;
+        processor::PutProcessor putProcessor;
+        processor::SetDataProcessor setData;
+    };
+
+    class HttpPatchProcessor : public processor::ChainProcessor {
+    public:
+        HttpPatchProcessor() {
+            setNextProcessor(&getData);
+            getData.setNextProcessor(&validator);
+            validator.setNextProcessor(&patchProcessor);
+            patchProcessor.setNextProcessor(&setData);
+        }
+    protected:
+        json processImplementation(json input) {
+            input["method"] = "patch";
+            return input;
+        }
+    private:
+        processor::GetDataProcessor getData;
+        processor::ValidatorProcessor validator;
+        processor::PatchProcessor patchProcessor;
+        processor::SetDataProcessor setData;
     };
 }

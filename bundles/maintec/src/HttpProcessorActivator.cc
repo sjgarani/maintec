@@ -8,14 +8,19 @@ class HttpProcessorActivator {
 public:
     explicit HttpProcessorActivator(const std::shared_ptr<celix::BundleContext>& ctx) {
         std::cout << "Started HTTP Processor from bundle with id " << ctx->getBundleId() << std::endl;
+        auto get = std::make_shared<processor::HttpGetProcessor>();
+        auto reg = ctx->registerService<processor::IProcessor>(get)
+                .addProperty(processor::IProcessor::PROCESSOR_NAME, "get")
+                .build();
+        regs.push_back(reg);
         auto put = std::make_shared<processor::HttpPutProcessor>();
-        auto reg = ctx->registerService<processor::IProcessor>(put)
+        reg = ctx->registerService<processor::IProcessor>(put)
                 .addProperty(processor::IProcessor::PROCESSOR_NAME, "put")
                 .build();
         regs.push_back(reg);
-        auto get = std::make_shared<processor::HttpGetProcessor>();
-        reg = ctx->registerService<processor::IProcessor>(get)
-                .addProperty(processor::IProcessor::PROCESSOR_NAME, "get")
+        auto patch = std::make_shared<processor::HttpPatchProcessor>();
+        reg = ctx->registerService<processor::IProcessor>(patch)
+                .addProperty(processor::IProcessor::PROCESSOR_NAME, "patch")
                 .build();
         regs.push_back(reg);
     }
