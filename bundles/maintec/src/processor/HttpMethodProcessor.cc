@@ -4,7 +4,7 @@
 #include <sw/redis++/redis++.h>
 #include <nlohmann/json-schema.hpp>
 #include "processor/IProcessor.h"
-#include "JsonHelperProcessor.h"
+#include "ChainProcessor.h"
 
 using json = nlohmann::json;
 using json_validator = nlohmann::json_schema::json_validator;
@@ -36,11 +36,25 @@ namespace processor {
                 "type": "object"
             }
         },
-        "properties": {
-            "uri": { "$ref": "#/definitions/uri_pointer" },
-            "data": { "$ref": "#/definitions/database" }
-        },
-        "required": ["uri", "data"]
+        "oneOf": [
+            {
+                "properties": {
+                    "uri": { "$ref": "#/definitions/uri_pointer" },
+                    "method": { "const": "get" },
+                    "data": { "$ref": "#/definitions/database" }
+                },
+                "required": ["uri", "method", "data"]
+            },
+            {
+                "properties": {
+                    "uri": { "$ref": "#/definitions/uri_pointer" },
+                    "method": { "const": "put" },
+                    "data": { "$ref": "#/definitions/database" },
+                    "payload": { "$ref": "#/definitions/database" }
+                },
+                "required": ["uri", "method", "data", "payload"]
+            }
+        ]
     }
     )"_json;
 
@@ -50,14 +64,14 @@ namespace processor {
             try {
                 validator.set_root_schema(maintec_schema);
             } catch (const std::exception &e) {
-                std::cerr << "Validation of schema failed, here is why: " << e.what() << "\n";
-                return json();
+                std::cerr << "Validation of schema failed, here is why: " << e.what();
+                return R"([])"_json;
             }
             try {
                 validator.validate(input);
             } catch (const std::exception &e) {
-                std::cerr << "Validation failed, here is why: " << e.what() << "\n";
-                return json();
+                std::cerr << "Validation failed, here is why: " << e.what();
+                return R"([])"_json;
             }
             return input;
         }
@@ -77,12 +91,17 @@ namespace processor {
     };
 
     // Http Processor
-    class HttpGetProcessor : public processor::StartProcessor {
+    class HttpGetProcessor : public processor::ChainProcessor {
     public:
         HttpGetProcessor() {
             setNextProcessor(&getData);
             getData.setNextProcessor(&validator);
-            getData.setNextProcessor(&uriProcessor);
+            validator.setNextProcessor(&uriProcessor);
+        }
+    protected:
+        json processImplementation(json input) {
+            input["method"] = "get";
+            return input;
         }
     private:
         processor::GetDataProcessor getData;
@@ -90,11 +109,16 @@ namespace processor {
         processor::UriProcessor uriProcessor;
     };
 
-    class HttpPutProcessor : public processor::StartProcessor {
+    class HttpPutProcessor : public processor::ChainProcessor {
     public:
         HttpPutProcessor() {
             setNextProcessor(&getData);
             getData.setNextProcessor(&validator);
+        }
+    protected:
+        json processImplementation(json input) {
+            input["method"] = "put";
+            return input;
         }
     private:
         processor::GetDataProcessor getData;

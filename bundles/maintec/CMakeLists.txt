@@ -16,7 +16,7 @@ add_celix_bundle(HttpProcessorBundle
     VERSION 1.0.0
 	SOURCES
         src/HttpProcessorActivator.cc
-        src/processor/JsonHelperProcessor.h
+        src/processor/ChainProcessor.h
         src/processor/HttpMethodProcessor.cc
 )
 
