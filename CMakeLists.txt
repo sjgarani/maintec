@@ -10,7 +10,9 @@ find_package(Celix REQUIRED)
 find_package(nlohmann_json REQUIRED)
 find_package(nlohmann_json_schema_validator REQUIRED)
 
-add_subdirectory(bundles/maintec)
+add_subdirectory(bundles/api)
+add_subdirectory(bundles/bringup)
+add_subdirectory(bundles/processor)
 
 add_celix_container(maintec
     COPY

@@ -1,0 +1,2 @@
+add_library(MaintecApi INTERFACE)
+target_include_directories(MaintecApi INTERFACE include)
