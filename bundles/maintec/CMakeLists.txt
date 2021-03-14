@@ -12,6 +12,9 @@ add_celix_bundle(MaintecBundle
 target_link_libraries(MaintecBundle PRIVATE ProcessorApi)
 target_link_libraries(MaintecBundle PRIVATE nlohmann_json::nlohmann_json)
 
+install_celix_bundle(MaintecBundle EXPORT maintec COMPONENT MaintecBundle)
+
+#
 add_celix_bundle(HttpProcessorBundle
     VERSION 1.0.0
 	SOURCES
@@ -22,6 +25,9 @@ add_celix_bundle(HttpProcessorBundle
 target_link_libraries(HttpProcessorBundle PRIVATE ProcessorApi)
 target_link_libraries(HttpProcessorBundle PRIVATE nlohmann_json::nlohmann_json)
 
+install_celix_bundle(HttpProcessorBundle EXPORT maintec COMPONENT HttpProcessorBundle)
+
+#
 add_celix_bundle(BringUpBundle
     VERSION 1.0.0
 	SOURCES
@@ -31,6 +37,9 @@ add_celix_bundle(BringUpBundle
 target_link_libraries(BringUpBundle PRIVATE ProcessorApi)
 target_link_libraries(BringUpBundle PRIVATE Celix::shell_api)
 
+install_celix_bundle(BringUpBundle EXPORT maintec COMPONENT BringUpBundle)
+
+# 
 add_celix_bundle(EndpointTestBundle
     VERSION 1.0.0
 	SOURCES
@@ -39,3 +48,5 @@ add_celix_bundle(EndpointTestBundle
 
 target_link_libraries(EndpointTestBundle PRIVATE ProcessorApi)
 target_link_libraries(EndpointTestBundle PRIVATE Celix::shell_api)
+
+install_celix_bundle(EndpointTestBundle EXPORT endpoint COMPONENT EndpointTestBundle)

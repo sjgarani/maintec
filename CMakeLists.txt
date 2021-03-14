@@ -1,48 +1,55 @@
 #${WS}/maintec/CMakeLists.txt
 
 cmake_minimum_required(VERSION 3.4)
-project(maintec CXX)
+project(maintec)
 
 SET(CMAKE_CXX_FLAGS "-std=c++11 -fno-rtti ${CMAKE_CXX_FLAGS}")
 SET(CMAKE_CXX_FLAGS_DEBUG "-g -DDEBUG")
 
 find_package(Celix REQUIRED)
 
-add_subdirectory(libs/nlohmann_json)
-
-add_subdirectory(bundles/maintec)
+add_subdirectory(bundles/remote)
 
 add_celix_container(maintec
     COPY
-    CXX
     BUNDLES
+        Celix::rsa_discovery_configured
+        Celix::rsa_topology_manager
+        Celix::rsa_dfi
         Celix::ShellCxx
         Celix::remote_shell
-        MaintecBundle
-        HttpProcessorBundle
-        BringUpBundle
+        calculator
+    PROPERTIES
+        RSA_PORT=18888
+        DISCOVERY_CFG_POLL_ENDPOINTS=http://192.168.1.3:9999/org.apache.celix.discovery.configured
 )
 
 add_celix_container(endpoint
     COPY
     CXX
     BUNDLES
-        Celix::ShellCxx
+        Celix::rsa_topology_manager
+        Celix::rsa_dfi
+        Celix::shell
         Celix::remote_shell
-        EndpointTestBundle
+        Celix::rsa_discovery_configured
+        calculator_shell
+    PROPERTIES
+        RSA_PORT=28888
+        DISCOVERY_CFG_POLL_ENDPOINTS=http://192.168.1.4:9999/org.apache.celix.discovery.configured
 )
 
-# <------------ add hiredis dependency --------------->
-find_path(HIREDIS_HEADER hiredis)
-target_include_directories(maintec PUBLIC ${HIREDIS_HEADER})
-
-find_library(HIREDIS_LIB hiredis)
-target_link_libraries(maintec PUBLIC ${HIREDIS_LIB})
-
-# <------------ add redis-plus-plus dependency -------------->
-# NOTE: this should be *sw* NOT *redis++*
-find_path(REDIS_PLUS_PLUS_HEADER sw)
-target_include_directories(maintec PUBLIC ${REDIS_PLUS_PLUS_HEADER})
-
-find_library(REDIS_PLUS_PLUS_LIB redis++)
-target_link_libraries(maintec PUBLIC ${REDIS_PLUS_PLUS_LIB})
+# # <------------ add hiredis dependency --------------->
+# find_path(HIREDIS_HEADER hiredis)
+# target_include_directories(maintec PUBLIC ${HIREDIS_HEADER})
+# 
+# find_library(HIREDIS_LIB hiredis)
+# target_link_libraries(maintec PUBLIC ${HIREDIS_LIB})
+# 
+# # <------------ add redis-plus-plus dependency -------------->
+# # NOTE: this should be *sw* NOT *redis++*
+# find_path(REDIS_PLUS_PLUS_HEADER sw)
+# target_include_directories(maintec PUBLIC ${REDIS_PLUS_PLUS_HEADER})
+# 
+# find_library(REDIS_PLUS_PLUS_LIB redis++)
+# target_link_libraries(maintec PUBLIC ${REDIS_PLUS_PLUS_LIB})
