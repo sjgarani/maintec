@@ -13,17 +13,31 @@ using namespace sw::redis;
 namespace processor {
 
     // Chain Processor
-    class ValidatorProcessor : public processor::ChainProcessor {
+    class InputValidatorProcessorStep : public processor::ProcessorStep {
         json processImplementation(json input) {
+            const json input_schema = R"(
+            {
+                "$schema": "http://json-schema.org/draft-07/schema#",
+                "title": "Maintec",
+                "definitions": {
+                    "uri_pointer": {
+                        "type": "string"
+                    },
+                    "database": {
+                        "type": "object"
+                    }
+                },
+                "properties": {
+                    "uri": { "$ref": "#/definitions/uri_pointer" },
+                    "payload": { "$ref": "#/definitions/database" }
+                },
+                "additionalProperties": false
+            }
+            )"_json;
+
             json_validator validator;
             try {
-                validator.set_root_schema(input["schema"]);
-                input.erase("schema");
-            } catch (const std::exception &e) {
-                std::cerr << "Validation of schema failed, here is why: " << e.what();
-                return R"([])"_json;
-            }
-            try {
+                validator.set_root_schema(input_schema);
                 validator.validate(input);
             } catch (const std::exception &e) {
                 std::cerr << "Validation failed, here is why: " << e.what();
@@ -33,7 +47,21 @@ namespace processor {
         }
     };
 
-    class UriProcessor : public processor::ChainProcessor {
+    class GetDataProcessorStep : public processor::ProcessorStep {
+    protected:
+        json processImplementation(json input) {
+            auto redis = Redis("tcp://127.0.0.1:6379");
+
+            try {
+                input["data"] = json::parse(redis.get("maintec:database").value());
+            } catch (const std::exception &e) {
+                std::cerr << "Json Parse failed, here is why: " << e.what();
+            }
+            return input;
+        }
+    };
+
+    class UriProcessorStep : public processor::ProcessorStep {
     protected:
         json processImplementation(json input) {
             json result = R"([])"_json;
@@ -46,7 +74,7 @@ namespace processor {
         }
     };
 
-    class PutProcessor : public processor::ChainProcessor {
+    class PutProcessor : public processor::ProcessorStep {
     protected:
         json processImplementation(json input) {
             json::json_pointer uri = json::json_pointer(input["uri"]);
@@ -57,7 +85,7 @@ namespace processor {
         }
     };
 
-    class PatchProcessor : public processor::ChainProcessor {
+    class PatchProcessor : public processor::ProcessorStep {
     protected:
         json processImplementation(json input) {
             json::json_pointer uri = json::json_pointer(input["uri"]);
@@ -68,10 +96,19 @@ namespace processor {
         }
     };
 
-    class SetDataProcessor : public processor::ChainProcessor {
+    class SetDataProcessor : public processor::ProcessorStep {
     protected:
         json processImplementation(json input) {
             auto redis = Redis("tcp://127.0.0.1:6379");
+
+            json_validator validator;
+            try {
+                validator.set_root_schema(json::parse(redis.get("maintec:schema").value()));
+                validator.validate(input);
+            } catch (const std::exception &e) {
+                std::cerr << "Validation failed, here is why: " << e.what();
+                return R"([])"_json;
+            }
 
             redis.set("maintec:database", input.dump());
             return input;
@@ -82,49 +119,27 @@ namespace processor {
     class HttpGetProcessor : public processor::ChainProcessor {
     public:
         HttpGetProcessor() {
-            setNextProcessor(&validator);
-            validator.setNextProcessor(&uriProcessor);
-        }
-    protected:
-        json processImplementation(json input) {
-            auto redis = Redis("tcp://127.0.0.1:6379");
-
-            input["method"] = "get";
-            try {
-                input["data"] = json::parse(redis.get("maintec:database").value());
-                input["schema"] = json::parse(redis.get("maintec:schema").value());
-            } catch (const std::exception &e) {
-                std::cerr << "Json Parse failed, here is why: " << e.what();
-            }
-            return input;
+            setNextProcessorStep(&inputValidator);
+            inputValidator.setNextProcessorStep(&getData);
+            getData.setNextProcessorStep(&uriProcessor);
         }
     private:
-        processor::ValidatorProcessor validator;
-        processor::UriProcessor uriProcessor;
+        processor::InputValidatorProcessorStep inputValidator;
+        processor::GetDataProcessorStep getData;
+        processor::UriProcessorStep uriProcessor;
     };
 
     class HttpPutProcessor : public processor::ChainProcessor {
     public:
         HttpPutProcessor() {
-            setNextProcessor(&validator);
-            validator.setNextProcessor(&putProcessor);
-            putProcessor.setNextProcessor(&setData);
-        }
-    protected:
-        json processImplementation(json input) {
-            auto redis = Redis("tcp://127.0.0.1:6379");
-
-            input["method"] = "put";
-            try {
-                input["data"] = json::parse(redis.get("maintec:database").value());
-                input["schema"] = json::parse(redis.get("maintec:schema").value());
-            } catch (const std::exception &e) {
-                std::cerr << "Json Parse failed, here is why: " << e.what();
-            }
-            return input;
+            setNextProcessorStep(&inputValidator);
+            inputValidator.setNextProcessorStep(&getData);
+            getData.setNextProcessorStep(&putProcessor);
+            putProcessor.setNextProcessorStep(&setData);
         }
     private:
-        processor::ValidatorProcessor validator;
+        processor::InputValidatorProcessorStep inputValidator;
+        processor::GetDataProcessorStep getData;
         processor::PutProcessor putProcessor;
         processor::SetDataProcessor setData;
     };
@@ -132,25 +147,14 @@ namespace processor {
     class HttpPatchProcessor : public processor::ChainProcessor {
     public:
         HttpPatchProcessor() {
-            setNextProcessor(&validator);
-            validator.setNextProcessor(&patchProcessor);
-            patchProcessor.setNextProcessor(&setData);
-        }
-    protected:
-        json processImplementation(json input) {
-            auto redis = Redis("tcp://127.0.0.1:6379");
-
-            input["method"] = "patch";
-            try {
-                input["data"] = json::parse(redis.get("maintec:database").value());
-                input["schema"] = json::parse(redis.get("maintec:schema").value());
-            } catch (const std::exception &e) {
-                std::cerr << "Json Parse failed, here is why: " << e.what();
-            }
-            return input;
+            setNextProcessorStep(&inputValidator);
+            inputValidator.setNextProcessorStep(&getData);
+            getData.setNextProcessorStep(&patchProcessor);
+            patchProcessor.setNextProcessorStep(&setData);
         }
     private:
-        processor::ValidatorProcessor validator;
+        processor::InputValidatorProcessorStep inputValidator;
+        processor::GetDataProcessorStep getData;
         processor::PatchProcessor patchProcessor;
         processor::SetDataProcessor setData;
     };
