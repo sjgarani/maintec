@@ -26,6 +26,6 @@ target_include_directories(maintec_endpoint PRIVATE src)
 target_link_libraries(maintec_endpoint PRIVATE Celix::shell_api maintec_api)
 
 celix_bundle_files(maintec_endpoint
-    ../maintec_api/com.garani.maintec.api.Processor.avpr
+    ../maintec_api/org.apache.celix.maintec.api.Processor.avpr
     DESTINATION .
 )

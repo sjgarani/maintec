@@ -19,4 +19,4 @@ add_library(maintec_api INTERFACE)
 target_include_directories(maintec_api INTERFACE include)
 set_target_properties(maintec_api PROPERTIES
     "INTERFACE_DESCRIPTOR"
-    "${CMAKE_CURRENT_LIST_DIR}/com.garani.maintec.api.Processor.avpr")
+    "${CMAKE_CURRENT_LIST_DIR}/org.apache.celix.maintec.api.Processor.avpr")
