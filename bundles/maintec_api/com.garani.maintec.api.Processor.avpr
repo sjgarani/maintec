@@ -1,0 +1,26 @@
+{
+    "protocol" : "Processor",
+    "namespace" : "com.garani.maintec.api",
+    "version" : "1.0.0",
+    "types": [
+        {
+            "name": "Input",
+            "type": "string"
+        },
+        {
+            "name": "Output",
+            "type": "string"
+        }
+    ],
+    "messages" : {
+        "process" : {
+            "request" : [ 
+                {
+                    "name" : "input",
+                    "type" : "Input"
+                }
+            ],
+            "response" : "Output"
+        }
+    }
+}

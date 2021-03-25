@@ -8,7 +8,9 @@ SET(CMAKE_CXX_FLAGS_DEBUG "-g -DDEBUG")
 
 find_package(Celix REQUIRED)
 
-add_subdirectory(bundles/remote)
+add_subdirectory(bundles/maintec_api)
+add_subdirectory(bundles/maintec_service)
+add_subdirectory(bundles/maintec_endpoint)
 
 add_celix_container(maintec
     COPY
@@ -18,10 +20,10 @@ add_celix_container(maintec
         Celix::rsa_dfi
         Celix::ShellCxx
         Celix::remote_shell
-        calculator
+        maintec_service
     PROPERTIES
         RSA_PORT=18888
-        DISCOVERY_CFG_POLL_ENDPOINTS=http://192.168.1.3:9999/org.apache.celix.discovery.configured
+        DISCOVERY_CFG_POLL_ENDPOINTS=http://10.5.0.5:9999/org.apache.celix.discovery.configured
 )
 
 add_celix_container(endpoint
@@ -33,10 +35,10 @@ add_celix_container(endpoint
         Celix::shell
         Celix::remote_shell
         Celix::rsa_discovery_configured
-        calculator_shell
+        maintec_endpoint
     PROPERTIES
         RSA_PORT=28888
-        DISCOVERY_CFG_POLL_ENDPOINTS=http://192.168.1.4:9999/org.apache.celix.discovery.configured
+        DISCOVERY_CFG_POLL_ENDPOINTS=http://10.5.0.6:9999/org.apache.celix.discovery.configured
 )
 
 # # <------------ add hiredis dependency --------------->

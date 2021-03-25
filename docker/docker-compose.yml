@@ -1,23 +1,27 @@
 version: "3.9"
 services:
-  gateway:
+  endpoint:
     build: .
     ports:
       - "6666:6666"
     networks:
-      default:
-        ipv4_address: 192.168.1.3
+      vpcbr:
+        ipv4_address: 10.5.0.5
+    command: bash -c "CELIX_BUNDLES_PATH=/opt/maintec/build/deploy/endpoint/bundles /opt/maintec/build/deploy/endpoint/endpoint"
   node_1:
     build: .
     ports:
       - "6667:6666"
     networks:
-      default:
-        ipv4_address: 192.168.1.4
+      vpcbr:
+        ipv4_address: 10.5.0.6
+    command: bash -c "CELIX_BUNDLES_PATH=/opt/maintec/build/deploy/maintec/bundles /opt/maintec/build/deploy/maintec/maintec"
+
+
 networks:
-    default:
-        ipam:
-            driver: default
-            config:
-                - subnet: 192.168.1.0/24
-                  gateway: 192.168.1.1
+  vpcbr:
+    driver: bridge
+    ipam:
+     config:
+       - subnet: 10.5.0.0/16
+         gateway: 10.5.0.1

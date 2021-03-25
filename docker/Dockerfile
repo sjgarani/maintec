@@ -32,11 +32,8 @@ RUN wget https://github.com/Kitware/CMake/releases/download/v3.18.6/cmake-3.18.6
     rm -Rf cmake-3.18.6*
 
 RUN git clone --single-branch --branch master https://github.com/apache/celix.git && \
-    git clone --single-branch --branch remote https://github.com/sjgarani/maintec.git
-
-
-WORKDIR /opt/celix
-RUN mkdir build && \
+    cd celix && \
+    mkdir build && \
     cd build && \
     cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo .. && \
     make && \
@@ -44,8 +41,9 @@ RUN mkdir build && \
     cd ../.. && \
     rm -Rf celix
 
-WORKDIR /opt/maintec
-RUN mkdir build && \
+RUN git clone --branch remote https://github.com/sjgarani/maintec.git && \
+    cd maintec && \
+    mkdir build && \
     cd build && \
     cmake .. && \
     make
