@@ -1,5 +1,0 @@
-@namespace("org.apache.celix.maintec.api")
-@version("1.0.0")
-protocol Processor {
-    string process(string msg);
-}

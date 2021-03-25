@@ -1,0 +1,6 @@
+@namespace("com.garani.maintec.api")
+@version("1.0.0")
+protocol Processor {
+    @index(0)
+    string process(string input);
+}

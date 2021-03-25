@@ -1,13 +1,13 @@
 {
   "protocol" : "Processor",
-  "namespace" : "org.apache.celix.maintec.api",
+  "namespace" : "com.garani.maintec.api",
   "version" : "1.0.0",
   "types" : [ ],
   "messages" : {
     "process" : {
       "index" : 0,
       "request" : [ {
-        "name" : "msg",
+        "name" : "input",
         "type" : "string"
       } ],
       "response" : "string"
