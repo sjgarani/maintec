@@ -23,8 +23,7 @@ add_celix_container(maintec
         maintec_service
     PROPERTIES
         RSA_PORT=18888
-        DISCOVERY_CFG_SERVER_PORT=10000
-        DISCOVERY_CFG_POLL_ENDPOINTS=http://10.5.0.5:10000/org.apache.celix.discovery.configured
+        DISCOVERY_CFG_POLL_ENDPOINTS=http://10.5.0.5:9999/org.apache.celix.discovery.configured
 )
 
 add_celix_container(endpoint
@@ -39,8 +38,7 @@ add_celix_container(endpoint
         maintec_endpoint
     PROPERTIES
         RSA_PORT=28888
-        DISCOVERY_CFG_SERVER_PORT=10000
-        DISCOVERY_CFG_POLL_ENDPOINTS=http://10.5.0.6:10000/org.apache.celix.discovery.configured
+        DISCOVERY_CFG_POLL_ENDPOINTS=http://10.5.0.6:9999/org.apache.celix.discovery.configured
 )
 
 # # <------------ add hiredis dependency --------------->

@@ -2,20 +2,12 @@ version: "3.9"
 services:
   endpoint:
     build: .
-    ports:
-      - "6666:6666"
-      - "10000:10000"
-      - "28888:28888"
     networks:
       vpcbr:
         ipv4_address: 10.5.0.5
     command: bash -c "CELIX_BUNDLES_PATH=/opt/maintec/build/deploy/endpoint/bundles /opt/maintec/build/deploy/endpoint/endpoint"
   node_1:
     build: .
-    ports:
-      - "6667:6666"
-      - "10000:10000"
-      - "18888:18888"
     networks:
       vpcbr:
         ipv4_address: 10.5.0.6
