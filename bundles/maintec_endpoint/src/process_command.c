@@ -47,21 +47,26 @@ bool processCommand_execute(void *handle, const char *const_line, FILE *out, FIL
 
     char *token = line;
     strtok_r(line, " ", &token);
-    char *inputStr = strtok_r(NULL, " ", &token);
 
-    struct process_callback_data data;
-    data.input = inputStr;
-    data.output = NULL;
-    data.rc = 0;
-    bool called = celix_bundleContext_useService(context, PROCESSOR_SERVICE, &data, processCallback);
-    if (called && data.rc == 0) {
-        fprintf(out, "Processor response: %s\n", data.output);
-    } else if (!called) {
-        fprintf(err, "Processor service not available\n");
-        ok = false;
+    if(token != NULL) {
+        struct process_callback_data data;
+        data.input = malloc(strlen(token) + 1);
+        strcpy(data.input, token);;
+        data.output = NULL;
+        data.rc = 0;
+        bool called = celix_bundleContext_useService(context, PROCESSOR_SERVICE, &data, processCallback);
+        if (called && data.rc == 0) {
+            fprintf(out, "Processor response: %s\n", data.output);
+        } else if (!called) {
+            fprintf(err, "Processor service not available\n");
+            ok = false;
+        } else {
+            fprintf(err, "Unexpected exception in Processor service(Result Code: %d)\n", data.rc);
+            ok = false;
+        }
+        free(data.input);
     } else {
-        fprintf(err, "Unexpected exception in Processor service\n");
-        ok = false;
+        fprintf(err, "Command there isnt input\n");
     }
 
     free(line);
