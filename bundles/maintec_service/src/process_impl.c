@@ -2,6 +2,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 
 #include "process_impl.h"
 
@@ -17,8 +18,8 @@ void process_destroy(process_t *process) {
 int process_impl(process_t *process __attribute__((unused)), char *input, char **output) {
     int status = CELIX_SUCCESS;
 
-    output = malloc(strlen(input));
-    strcpy(output, input);
+    output = malloc(sizeof(input));
+    strcpy(*output, input);
     printf("Maintec: %s\n", *output);
 
     return status;
