@@ -52,7 +52,7 @@ bool processCommand_execute(void *handle, const char *const_line, FILE *out, FIL
         struct process_callback_data data;
         data.input = malloc(sizeof(token) + 1);
         strcpy(data.input, token);
-        data.output = "xxxxxxxxxxxxxx";
+        data.output = malloc(265);
         data.rc = 0;
         bool called = celix_bundleContext_useService(context, PROCESSOR_SERVICE, &data, processCallback);
         if (called && data.rc == 0) {
@@ -65,6 +65,7 @@ bool processCommand_execute(void *handle, const char *const_line, FILE *out, FIL
             ok = false;
         }
         free(data.input);
+        free(data.output);
     } else {
         fprintf(err, "Command there isnt input\n");
     }
