@@ -50,9 +50,9 @@ bool processCommand_execute(void *handle, const char *const_line, FILE *out, FIL
 
     if(token != NULL) {
         struct process_callback_data data;
-        data.input = malloc(strlen(token) + 1);
+        data.input = malloc(sizeof(token) + 1);
         strcpy(data.input, token);
-        data.output = NULL;
+        data.output = "xxxxxxxxxxxxxx";
         data.rc = 0;
         bool called = celix_bundleContext_useService(context, PROCESSOR_SERVICE, &data, processCallback);
         if (called && data.rc == 0) {
