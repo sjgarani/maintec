@@ -17,7 +17,7 @@
 
 add_celix_bundle(maintec_service
     SOURCES
-        src/process_impl
+        src/laser_service_impl
         src/maintec_service_activator
     SYMBOLIC_NAME "maintec_service"
     VERSION 1.0.0

@@ -1,0 +1,8 @@
+@namespace("com.garani.maintec.api")
+@version("1.0.0")
+protocol LaserService {
+    @index(0)
+    void setState(boolean state);
+    @index(1)
+    boolean getState();
+}

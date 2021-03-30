@@ -1,0 +1,21 @@
+{
+  "protocol" : "LaserService",
+  "namespace" : "com.garani.maintec.api",
+  "version" : "1.0.0",
+  "types" : [ ],
+  "messages" : {
+    "setState" : {
+      "index" : 0,
+      "request" : [ {
+        "name" : "state",
+        "type" : "boolean"
+      } ],
+      "response" : "null"
+    },
+    "getState" : {
+      "index" : 1,
+      "request" : [ ],
+      "response" : "boolean"
+    }
+  }
+}
