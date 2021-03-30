@@ -8,4 +8,6 @@ RUN git clone https://github.com/sjgarani/maintec.git && \
     make
 
 EXPOSE 6666
+EXPOSE 9999
 EXPOSE 18888
+

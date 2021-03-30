@@ -1,31 +1,24 @@
 version: "3.9"
 services:
   etcd:
-    image: "quay.io/coreos/etcd:v3.4.1"
-    command: [
-      "etcd",
-      "--name=etcd0",
-      "--advertise-client-urls=http://10.5.0.3:2379,http://10.5.0.3:4001",
-      "--listen-client-urls=http://0.0.0.0:2379,http://0.0.0.0:4001",
-      "--initial-advertise-peer-urls=http://10.5.0.3:2380",
-      "--listen-peer-urls=http://0.0.0.0:2380",
-      "--initial-cluster-token=etcd-cluster-1",
-      "--initial-cluster=etcd0=http://10.5.0.3:2380",
-      "--initial-cluster-state=new"
-    ]
+    image: 'bitnami/etcd:latest'
+    environment:
+      - ALLOW_NONE_AUTHENTICATION=yes
+      - ETCD_ADVERTISE_CLIENT_URLS=http://etcd:2379
     ports:
-    - "2379:2379"
-    - 2380
-    - 4001
+      - 2379:2379
+      - 2380:2380
     networks:
       vpcbr:
         ipv4_address: 10.5.0.3
   node_1:
     build: .
+    ports:
+    - "9999:9999"
     networks:
       vpcbr:
         ipv4_address: 10.5.0.4
-    command: bash -c "CELIX_BUNDLES_PATH=/opt/maintec/build/deploy/maintec/bundles /opt/maintec/build/deploy/maintec/maintec"
+    command: bash -c "RSA_IP=10.5.0.4 DISCOVERY_CFG_SERVER_IP=10.5.0.4 DISCOVERY_ETCD_SERVER_IP=10.5.0.3 CELIX_BUNDLES_PATH=/opt/maintec/build/deploy/maintec/bundles /opt/maintec/build/deploy/maintec/maintec"
 
 networks:
   vpcbr:
