@@ -3,7 +3,7 @@
 
 #include <stdbool.h>
 
-#define LASER_SERVICE              "com.garani.maintec.api.Laser"
+#define LASER_SERVICE              "com.garani.maintec.api.LaserService"
 #define LASER_CONFIGURATION_TYPE   "org.amdatu.remote.admin.http"
 
 typedef struct laser_service laser_service_t;
