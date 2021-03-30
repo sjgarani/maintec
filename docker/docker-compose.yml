@@ -1,17 +1,16 @@
 version: "3.9"
 services:
-  endpoint:
-    build: .
+  configuration:
+    build: bitnami/etcd
     networks:
       vpcbr:
-        ipv4_address: 10.5.0.5
-    command: bash -c "RSA_IP=10.5.0.5 CELIX_BUNDLES_PATH=/opt/maintec/build/deploy/endpoint/bundles /opt/maintec/build/deploy/endpoint/endpoint"
+        ipv4_address: 10.5.0.3
   node_1:
     build: .
     networks:
       vpcbr:
-        ipv4_address: 10.5.0.6
-    command: bash -c "RSA_IP=10.5.0.6 CELIX_BUNDLES_PATH=/opt/maintec/build/deploy/maintec/bundles /opt/maintec/build/deploy/maintec/maintec"
+        ipv4_address: 10.5.0.4
+    command: bash -c "CELIX_BUNDLES_PATH=/opt/maintec/build/deploy/maintec/bundles /opt/maintec/build/deploy/maintec/maintec"
 
 networks:
   vpcbr:

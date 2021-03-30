@@ -21,5 +21,6 @@ add_celix_container(maintec
         Celix::remote_shell
         maintec_service
     PROPERTIES
+        DISCOVERY_ETCD_SERVER_IP=10.5.0.3
         RSA_PORT=18888
 )
